@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class VacationPayCalculationApplicationTests {
@@ -36,6 +37,7 @@ class VacationPayCalculationApplicationTests {
     }
 
     static Map<String, VacationCalcArgs> argsMap = new HashMap<>();
+
     static {
         argsMap.put("test1", new VacationCalcArgs(29300, 10,
                 24, 10, 2022, 8000));
@@ -128,5 +130,38 @@ class VacationPayCalculationApplicationTests {
         assertEquals(args.expectedResult, calculateVacationPay(args));
     }
 
+    @Test
+    void testCalculationException1() {
+        VacationCalcArgs args = new VacationCalcArgs(-1000, 10,
+                24, 10, 2022, 8000);
+        assertThrows(IllegalArgumentException.class, () -> calculateVacationPay(args));
+    }
 
+    @Test
+    void testCalculationException2() {
+        VacationCalcArgs args = new VacationCalcArgs(20000, 0,
+                24, 10, 2022, 8000);
+        assertThrows(IllegalArgumentException.class, () -> calculateVacationPay(args));
+    }
+
+    @Test
+    void testCalculationException3() {
+        VacationCalcArgs args = new VacationCalcArgs(20000, -2,
+                24, 10, 2022, 8000);
+        assertThrows(IllegalArgumentException.class, () -> calculateVacationPay(args));
+    }
+
+    @Test
+    void testCalculationException4() {
+        VacationCalcArgs args = new VacationCalcArgs(20000, 10,
+                24, 13, 2022, 8000);
+        assertThrows(DateTimeException.class, () -> calculateVacationPay(args));
+    }
+
+    @Test
+    void testCalculationException5() {
+        VacationCalcArgs args = new VacationCalcArgs(20000, 10,
+                29, 2, 2020, 8000);
+        assertDoesNotThrow(() -> calculateVacationPay(args));
+    }
 }
