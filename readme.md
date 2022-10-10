@@ -1,0 +1,1 @@
+http://localhost:8080/calculacte?averageWage=29300&vacationDaysAmount=14&vacationStartDay=30&vacationStartMonth=12&vacationStartYear=2022
